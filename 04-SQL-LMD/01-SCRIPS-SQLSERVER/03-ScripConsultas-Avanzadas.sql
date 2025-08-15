@@ -127,4 +127,130 @@ INNER JOIN Pedidos AS P
 ON C.Num_Cli = P.Cliente
 INNER JOIN Representantes AS R
 ON C.Rep_Cli = R.Num_Empl
-WHERE P.Importe > 25000
+WHERE P.Importe > 25000;
+
+
+SELECT * 
+FROM Categoria
+SELECT *
+FROM Producto
+
+/*
+INNER JOIN 
+*/
+
+SELECT * 
+FROM Categoria AS c
+JOIN Producto AS p 
+ON c.CategoriaId = p.Categoria
+
+/*LEFT JOIN O LEFT OUTER JOIN
+
+La primera tabla que en el from es la tabla izquierda 
+*/
+
+SELECT * 
+FROM Categoria AS c
+LEFT OUTER JOIN Producto AS p 
+ON c.CategoriaId = p.Categoria
+
+--mostrar todos las categorias que no tengan productos asignados 
+
+SELECT c.CategoriaId , c.Nombre
+FROM Categoria AS c
+LEFT OUTER JOIN Producto AS p 
+ON c.CategoriaId = p.Categoria
+WHERE P.Categoria is null;
+
+/*
+RIGHT JOIN O RIGHT OUTER JOIN
+
+toma todos los datos de la tabla derecha y los que coincidan 
+con la tabla izquieda y los que no coinciden los ponen en null*/
+
+SELECT *
+FROM Categoria AS c
+RIGHT JOIN Producto AS p 
+ON c.CategoriaId = p.Categoria
+
+
+--selecciona todos aquellos productos que no tienen categoria asignada
+
+SELECT p.Nombre AS [Nombre Producto],
+	   p.Precio AS [Precio]
+FROM Categoria AS c
+RIGHT JOIN Producto AS p 
+ON c.CategoriaId = p.Categoria
+WHERE P.Categoria is null;
+
+/*
+FULL JOIN
+
+obtener los datos de la tabla Izquierda, los datos de la tabla derecha 
+y todas las consulatas 
+*/
+
+SELECT * 
+FROM Categoria AS c
+CROSS JOIN Producto AS p 
+
+SELECT * 
+FROM Categoria AS c, Producto AS p 
+
+SELECT *
+FROM Categoria AS c,
+ Producto AS p 
+WHERE c.CategoriaId = p.Categoria;
+
+/*
+AGREGACION  
+
+COUNT(*) - CUENTA LAS FILAS 
+COUNT(CAMPO) - CUENTAS LAS FLIAS PERO NO LOS NULL
+MIN() - OBTIENE EL VALOR MINIMO DE UN CAMPO
+MAX() - OBTIENE EL VALOR MAXIMO DE UN CAMPO
+AVG() - OBTIENE LA MEDIA RITMETICA O EL PROMEDIO 
+SUM() - OBTIENE EL TOTAL O LA SUMATORIA
+*/
+
+USE NORTHWND;
+
+--cuantos clientes hay
+
+SELECT COUNT(*) AS [Numero de clientes]
+FROM Customers
+
+--cuantos ventas sean realizado
+SELECT COUNT (*)
+FROM Orders;
+
+--cuanta ventas se realizaron en 1996
+
+SELECT COUNT (*)
+FROM Orders
+WHERE DATEPART(YEAR, OrderDate) = 1996;
+
+--selccionar la venta de la fecha mas antigua que se hizo
+
+SELECT MIN(OrderDate) AS [Fecha Primera Venta]
+FROM Orders;
+
+--seleccionar el total que se ha vendido
+SELECT SUM(UnitPrice * Quantity) AS [Total de ventas]
+FROM [Order Details] AS od
+INNER JOIN Orders AS o
+ON o.OrderID = od.OrderID
+WHERE DATEPART (yy, o.OrderDate) BETWEEN 1996 AND 1997
+AND o.CustomerID = 'AROUT';
+
+--seleccionar las ventas totales hecghas a cada uno de nuestro clintes 
+
+SELECT c.CompanyName AS [Cliente], 
+SUM(UnitPrice * Quantity) AS [Total de ventas]
+FROM [Order Details] AS od
+INNER JOIN Orders AS o
+ON o.OrderID = od.OrderID
+INNER JOIN Customers AS c
+ON c.CustomerID = o.CustomerID
+WHERE DATEPART (yy, o.OrderDate) BETWEEN 1996 AND 1997
+GROUP BY c.CompanyName;
